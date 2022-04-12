@@ -2,6 +2,16 @@ require 'rails_helper'
 
 RSpec.describe User, type: :model do
   describe "Validations" do
+    it "is invalid when password length is less than 3" do
+      password_length = User.create(
+        first_name: "Sasu",
+        last_name: "Osayande",
+        email: "sasu@email.com",
+        password: "45",
+        password_confirmation: "45"
+      )
+      expect(password_length).to_not be_valid
+    end
     it "is invalid when password and password confirmation do not match" do
       password_match = User.create(
         first_name: "Sasu",
