@@ -90,4 +90,42 @@ RSpec.describe User, type: :model do
       expect(no_last_name).to_not be_valid
     end
   end
+  describe '.authenticate_with_credentials' do
+    it "is invalid when user authentication fails" do
+      user = User.new(
+        first_name: "Sasu",
+        last_name: "Osayande",
+        email: "sasu@email.com",
+        password: "456",
+        password_confirmation: "456"
+      )
+
+      user = User.authenticate_with_credentials("osayande@email.com", user.password)
+      expect(user).to be(nil)
+    end
+    it "is valid when a user adds spaces before and/or after their email" do
+      user = User.create(
+        first_name: "Sasu",
+        last_name: "Osayande",
+        email: "sasu@email.com",
+        password: "456",
+        password_confirmation: "456"
+      )
+
+      auth_user = User.authenticate_with_credentials(" sasu@email.com ", user.password)
+      expect(auth_user).to eq(user)
+    end
+    it "is valid when a user types their email in the wrong case" do
+      user = User.create(
+        first_name: "Sasu",
+        last_name: "Osayande",
+        email: "sasu@email.com",
+        password: "456",
+        password_confirmation: "456"
+      )
+
+      auth_user = User.authenticate_with_credentials("SASU@email.com", user.password)
+      expect(auth_user).to eq(user)
+    end
+  end
 end
